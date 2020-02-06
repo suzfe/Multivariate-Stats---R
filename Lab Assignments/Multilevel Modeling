@@ -1,0 +1,51 @@
+#MLM Lab Assignment
+# March 17, 2016
+
+# import data
+install.packages('foreign')
+library('foreign')
+question1<-read.spss(file.choose(), use.value.labels=TRUE, to.data.frame=TRUE)
+
+# attach data
+attach(question1)
+
+## Preparing Data
+# Step 1: Inspect data for plausibility
+range(question1$Ther_ID)
+hist(question1$Ther_ID)
+
+range(question1$Stressors)
+hist(question1$Stressors)
+
+range(question1$Anxiety)
+hist(question1$Anxiety)
+
+range(question1$Yrs_Experience)
+hist(question1$Yrs_Experience)
+
+## Step 2: Run the Analysis
+# a) First analysis: The null model to calculate ICC
+# used to determine if MLM is necessary
+
+Null_model <- lme(fixed=Anxiety~1, random=~1|Ther_ID)
+summary(Null_model)
+
+ICC <- (3.867713^2)/((3.867713^2)+(3.821731^2))
+ICC #0.506 is greater than 0.1, so MLM is needed 
+
+# b) Second analysis: the random intercepts model 
+randint <- lme(Anxiety ~ Stressors*Yrs_Experience, random=~1|Ther_ID)
+summary(randint)
+
+# c) Third analysis: random intercepts and slopes model
+randintslope <- lme(Anxiety~ Stressors*Yrs_Experience, random= ~1+ Stressors|Ther_ID)
+summary(randintslope)
+
+#the random slopes doesn't make sense here 
+# the random intercept model is the preferred model 
+# I tried a random slopes model and didn't get a solution
+# the relationship between stressors and anxiety will not be influenced by the therapist because we don't expect the relationship to change
+
+# For Semi-Partial R:
+
+Anova(randint, type=3)

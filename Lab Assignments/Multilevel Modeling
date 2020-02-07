@@ -4,7 +4,8 @@
 # import data
 install.packages('foreign')
 library('foreign')
-question1<-read.spss(file.choose(), use.value.labels=TRUE, to.data.frame=TRUE)
+question1<-read.spss(file.choose(), use.value.labels=TRUE, to.data.frame=TRUE) 
+# or setwd() and then read.xls("") [if data is in excel file]
 
 # attach data
 attach(question1)
